@@ -1,0 +1,250 @@
+<!DOCTYPE html> 
+<html> 
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Page Title</title> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" />
+	<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.js"></script>
+
+	<style>
+		.player-row {
+			clear: left;
+			display: block;
+			height: 30px;
+			margin-bottom: 8px;
+		}
+		.player-name {
+			background: transparent;
+			width: 100px;
+			border: 2px solid transparent;
+			padding-left: 5px;
+			margin: 0px 4px;
+			float: left;
+			overflow: hidden;
+			overflow: ellipsis;
+			height: 30px;
+			line-height: 30px;
+			text-shadow: 0.04em 0.04em 0.1em black;
+		}
+		.score {
+			margin-right: 2px;
+			float: left;
+			height: 30px;
+			line-height: 30px;
+			min-width: 30px;
+			text-align: center;
+			border: transparent;
+			background: #ccc;
+			color: #333;
+		}
+		.score-sum {
+			background: #333;
+			color: #ccc;
+			font-weight: bolder;
+			text-shadow: 0.04em 0.04em 0.1em #fff;
+		}
+		.score-edit {
+			background: #f93;
+			color: #000;
+		}
+
+		#score-input {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.inline-div {
+			display: inline-block;
+			float: none;
+		}
+
+		#score-input {
+			display: none;
+		}
+
+		#value-edit, #value-save {
+			margin-top: -3em;
+		}
+	</style>
+
+
+	<script type="text/javascript">
+		String.prototype.format = function() {
+		  var args = arguments;
+		  return this.replace(/{(\d+)}/g, function(match, number) { 
+		    return typeof args[number] != 'undefined'
+		      ? args[number]
+		      : '{' + number + '}'
+		    ;
+		  });
+		};
+
+		// SETTINGS //
+		var POINTS_AT_START = 0;
+		var SMALL_INCREMENT_VALUE = 1;
+		var SMALL_DECREMENT_VALUE = -1;
+		var BIG_INCREMENT_VALUE = 10;
+		var BIG_DECREMENT_VALUE = -10;
+
+
+		var rounds = 0;	
+
+		function _addPlayer() {
+			// prepare
+			var wrapper = $('<div>').addClass("player-row");
+			var p_name = $('<div>').addClass("player-name").text($("#inp-playername").val());
+			var p_score_sum = $('<div>').addClass("score").addClass("score-sum").text('0');
+			// link together
+			wrapper.append(p_name).append(p_score_sum);
+
+			// already played some rounds?
+			for (var i=0; i<rounds; i++) {
+				_addRoundForPlayer(wrapper);		
+			}	
+
+			// put to the tree (it's Christmas!)			
+			$("#scoreboard").append(wrapper);
+		}
+
+		function _addRound() {
+			_getPlayers().each(function(index) {
+				_addRoundForPlayer($(this));
+			});
+			rounds++;
+		}
+	
+		function _getPlayers() {
+			return $("#scoreboard").children("div");
+		}
+
+		function _playerSum(player) {
+			// find rounds
+			var rounds = player.children('[class*="score"]').not(':last');
+			// calculate sum
+			var sum = 0;
+			rounds.each(function() {
+				sum = sum + parseInt($(this).text());
+			});
+			// set result
+			player.children('[class*="score"]').filter(':last').text(sum);			
+		}
+
+		function _addRoundForPlayer(object) {
+			var newDiv = $("<div>").addClass("score").text(POINTS_AT_START);
+			// add event
+			newDiv.click(function() {
+				// set styles accordingly for visual feedback as well as saving where the edit is ought to be made
+				$('[class*="score-edit"]').removeClass("score-edit");
+				$(this).addClass("score-edit");
+				// copy value over
+				$("#value-edit").text($(this).text());
+
+				$("#score-input").fadeIn(500);
+			});
+
+			// put to the tree at the right place
+			object.children("div").last().before(newDiv);
+		}
+
+		function _add(value) {
+			var addedValue = 0;
+			switch (value) {
+				case -2:
+					addedValue = BIG_DECREMENT_VALUE;
+					break;
+				case -1:
+					addedValue = SMALL_DECREMENT_VALUE;
+					break;
+				case 1:
+					addedValue = SMALL_INCREMENT_VALUE;
+					break;
+				case 2:
+					addedValue = BIG_INCREMENT_VALUE;
+					break;
+			}
+			$("#value-edit").text(parseInt($("#value-edit").text()) + parseInt(addedValue));
+		}
+
+		function _save() {
+			// copy new value back
+			var value = parseInt($("#value-edit").text());
+			var target = $('[class*="score-edit"]');
+			target.text(value);
+			// hide controls
+			$("#score-input").fadeOut(500);
+			target.removeClass("score-edit");
+			// recalculate sum
+			_playerSum(target.parent());
+		}
+
+		function _clear() {
+			// DEBUG
+			//_getPlayers().each(function() {
+			//	_playerSum($(this));			
+			//});
+			//return;
+			$("#scoreboard").empty();
+			rounds = 0;
+		}
+	</script>
+</head> 
+
+<body> 
+
+<div data-role="page" id="main">
+	<div data-role="header" data-position="fixed">
+		<h1>Ergebnisse</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div id="scoreboard">
+		</div>
+
+		<div id="score-input">
+			<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="notext"></a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="notext"></a>
+			<div id="value-edit" class="score inline-div"></div>
+			<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="notext"></a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="notext"></a>
+			<div id="value-save" class="score inline-div" onclick="_save();">Ok.</div>
+		</div>
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#addP" data-role="button" data-icon="plus">Spieler</a></li>
+				<li><a href="javascript:_addRound();" data-role="button" data-icon="plus">Runde</a></li>
+				<li><a href="javascript:_clear();" data-role="button" data-icon="delete">Neu</a></li>
+			</ul>
+		</div>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+
+<div data-role="page" id="addP">
+	<div data-role="header" data-position="fixed">
+		<h1>Neuer Spieler</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div data-role="fieldcontain">
+			<label for="name">Spielername:</label>
+    			<input type="text" name="name" id="inp-playername" value="Mareike"  />
+		</div>	
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#main" data-rel="back" data-role="button" data-icon="back">Abbrechen</a></li>
+				<li><a href="#main" onclick="_addPlayer();" data-role="button" data-direction="reverse" data-icon="check">Hinzufügen</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
