@@ -51,11 +51,6 @@
 			color: #000;
 		}
 
-		#score-input {
-			margin-left: auto;
-			margin-right: auto;
-		}
-
 		.inline-div {
 			display: inline-block;
 			float: none;
@@ -63,6 +58,11 @@
 
 		#score-input {
 			display: none;
+			clear: left;
+			margin-top: 3em;
+			margin-bottom: 3em;
+			margin-left: auto;
+			margin-right: auto;
 		}
 
 		#value-edit, #value-save {
@@ -186,8 +186,10 @@
 			//	_playerSum($(this));			
 			//});
 			//return;
-			$("#scoreboard").empty();
-			rounds = 0;
+			if (confirm("Wirklich alle Ergebnisse löschen?")) {
+				$("#scoreboard").empty();
+				rounds = 0;
+			}
 		}
 	</script>
 </head> 
@@ -207,7 +209,7 @@
 			<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="notext"></a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="notext"></a>
 			<div id="value-edit" class="score inline-div"></div>
 			<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="notext"></a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="notext"></a>
-			<div id="value-save" class="score inline-div" onclick="_save();">Ok.</div>
+			<div id="value-save" class="score inline-div" onclick="_save();">Ok</div>
 		</div>
 	</div><!-- /content -->
 	
