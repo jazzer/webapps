@@ -75,8 +75,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		#score-input {
 			display: none;
 			clear: left;
-			margin-top: 3em;
-			margin-bottom: 3em;
+			margin-top: 1em;
+			margin-bottom: 1em;
 			margin-left: auto;
 			margin-right: auto;
 		}
@@ -167,6 +167,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 
 		function _add(value) {
 			var addedValue = 0;
+			var target = $('[class*="score-edit"]');
 			switch (value) {
 				case -2:
 					addedValue = BIG_DECREMENT_VALUE;
@@ -181,15 +182,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 					addedValue = BIG_INCREMENT_VALUE;
 					break;
 			}
-			$("#value-edit").text(parseInt($("#value-edit").text()) + parseInt(addedValue));
+			target.text(parseInt(target.text()) + parseInt(addedValue));
 		}
 
 		function _save() {
-			// copy new value back
-			var value = parseInt($("#value-edit").text());
-			var target = $('[class*="score-edit"]');
-			target.text(value);
 			// hide controls
+			var target = $('[class*="score-edit"]');
 			$("#score-input").fadeOut(500);
 			target.removeClass("score-edit");
 			// recalculate sum
@@ -222,10 +220,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		</div>
 
 		<div id="score-input">
-			<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="notext"></a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="notext"></a>
-			<div id="value-edit" class="score inline-div"></div>
-			<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="notext"></a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="notext"></a>
-			<div id="value-save" class="score inline-div" onclick="_save();">Ok</div>
+			<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="left" data-inline="true">&nbsp;</a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="left" data-inline="true">&nbsp;</a>
+			<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="right" data-inline="true">&nbsp;</a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="right" data-inline="true">&nbsp;</a><div style="display: inline-block;width: 30px;"></div>
+			<a href="" onclick="_save();" data-role="button" data-icon="arrow-u" data-iconpos="left" data-inline="true" data-theme="b">Ok</a>
 		</div>
 	</div><!-- /content -->
 	
@@ -234,7 +231,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			<ul>
 				<li><a href="#addP" data-role="button" data-icon="plus">Spieler</a></li>
 				<li><a href="javascript:_addRound();" data-role="button" data-icon="plus">Runde</a></li>
-				<li><a href="javascript:_clear();" data-role="button" data-icon="delete">Neu</a></li>
+				<li><a href="javascript:_stats();" data-role="button" data-icon="star">Statistik</a></li>
+				<li><a href="javascript:_finish();" data-role="button" data-icon="check">Fertig!</a></li>
+				<li><a href="javascript:_clear();" data-role="button" data-icon="delete">Löschen</a></li>
 			</ul>
 		</div>
 	</div><!-- /footer -->
