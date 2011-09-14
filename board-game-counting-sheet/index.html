@@ -72,6 +72,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			float: none;
 		}
 
+		.maxColVal {
+			background: #1a0;
+		}
+
 		#score-input {
 			display: none;
 			clear: left;
@@ -149,6 +153,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		}
 
 		function _addRoundForPlayer(object) {
+			// POINTS_AT_START = parseInt(Math.random() * 10); // DEBUG
 			var newDiv = $("<div>").addClass("score").text(POINTS_AT_START);
 			// add event
 			newDiv.click(function() {
@@ -194,25 +199,58 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 				$("#score-input").fadeOut(500);
 			}
 			target.removeClass("score-edit");
+			 _removeStats();
 			// recalculate sum
 			_playerSum(target.parent());
 		}
 
+		function _removeStats() {
+			$('[class*="maxColVal"]').removeClass("maxColVal");
+		}
+
 		function _stats() {
+			 _removeStats();
 			// highlight best player per round and in total
-			var rounds = player.children('[class*="score"]').not(':last');
-			
+			var players = $("#scoreboard").children('[class*="player-row"]');
+			// make an array with the single round points
+			var playerArray = new Array(players.length);
+			for (var i=0; i < players.length; i++) {
+				row = players[i];
+				playerArray[i] = $(row).children('[class*="score"]').toArray();
+			}
+
+			// loop around to find max values per column
+			for (var r=0; r <= rounds; r++) {
+				console.debug("r: " + r);
+				// find maximum value in this column					
+				var maxVal = -100000;
+				for (var i=0; i < playerArray.length; i++) {
+					console.debug("i: " + i);
+					if (parseInt($(playerArray[i][r]).text()) > maxVal) {
+						maxVal = parseInt($(playerArray[i][r]).text());
+					}
+					console.debug(maxVal);
+				}
+				// mark visually
+				for (var i=0; i < playerArray.length; i++) {
+					if (parseInt($(playerArray[i][r]).text()) == maxVal) {
+						$(playerArray[i][r]).addClass("maxColVal");
+					}
+				}
+			}			
 		}
 
 		function _finish() {
 			if (confirm("Wirklich auswerten?")) {
-				// sort
-				_sort(500);			
+				_sort();
+				_stats();			
 				// winner message
+				var winner_name = $("#scoreboard").find('[class*="player-name"]').filter(":first").text();
+				alert("{0} hat gewonnen!".format(winner_name));
 			}
 		}
 
-		function _sort(speed) {
+		function _sort() {
 			var players = $("#scoreboard").find('[class*="score-sum"]');
 			players.sortElements(function(a, b) {
 		                return parseInt($(a).text()) < parseInt($(b).text());
