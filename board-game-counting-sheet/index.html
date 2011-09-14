@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Page Title</title> 
+	<title>Ergebnisse</title> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" />
 	<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.js"></script>
@@ -75,6 +75,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 
 		.maxColVal {
 			background: #6f3;
+			color: black;
 		}
 
 		#score-input {
@@ -222,15 +223,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 
 			// loop around to find max values per column
 			for (var r=0; r <= rounds; r++) {
-				console.debug("r: " + r);
 				// find maximum value in this column					
 				var maxVal = -100000;
 				for (var i=0; i < playerArray.length; i++) {
-					console.debug("i: " + i);
 					if (parseInt($(playerArray[i][r]).text()) > maxVal) {
 						maxVal = parseInt($(playerArray[i][r]).text());
 					}
-					console.debug(maxVal);
 				}
 				// mark visually
 				for (var i=0; i < playerArray.length; i++) {
@@ -254,7 +252,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		function _sort() {
 			var players = $("#scoreboard").find('[class*="score-sum"]');
 			players.sortElements(function(a, b) {
-		                return Integer.parseInt($(a).text()) < Integer.parseInt($(b).text());
+		                return parseInt($(a).text()) < parseInt($(b).text());
 		            }, function() {
 		                return this.parentNode;
 		            }
