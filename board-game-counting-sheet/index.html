@@ -59,6 +59,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		.score-sum {
 			background: #333;
 			color: #ccc;
+			margin-left: 5px;
 			font-weight: bolder;
 			text-shadow: 0.04em 0.04em 0.1em #fff;
 		}
@@ -73,7 +74,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		}
 
 		.maxColVal {
-			background: #1a0;
+			background: #6f3;
 		}
 
 		#score-input {
@@ -253,7 +254,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		function _sort() {
 			var players = $("#scoreboard").find('[class*="score-sum"]');
 			players.sortElements(function(a, b) {
-		                return parseInt($(a).text()) < parseInt($(b).text());
+		                return Integer.parseInt($(a).text()) < Integer.parseInt($(b).text());
 		            }, function() {
 		                return this.parentNode;
 		            }
