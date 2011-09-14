@@ -45,12 +45,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 				// change text
 				$('#main').children('[data-role="footer"]').children('[data-role="navbar"]').children('ul').children().first().find('.ui-btn-text').html('Einkauf');
 				// hide non-selected items
-				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').fadeOut();
+				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').parents('li').fadeOut();
 			} else {
 				globalState = 'selection';
 				$('#main').children('[data-role="footer"]').children('[data-role="navbar"]').children('ul').children().first().find('.ui-btn-text').html('Planung');
 				// show non-selected items
-				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').fadeIn();
+				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').parents('li').fadeIn();
 			}
 		}
 		
@@ -70,24 +70,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			for (good in goodsArray) {
 				good = goodsArray[good].replace(/^\s+|\s+$/g, ''); // trim!
 				// create button with text and icon
-				var button = $('<li>').attr({'data-icon': 'plus'}).append($('<a>').attr({'href': '#', 'data-state': 'not_selected'}).html(good).addClass('myui_notSelected'));
+				var link = $('<a>').attr({'href': '#', 'data-state': 'not_selected'}).html(good).addClass('myui_notSelected');
+				var button = $('<li>').attr({'data-icon': 'plus'}).append(link);
 				// add onClick logic
-				button.click(function() {
+				link.click(function() {
+					parentLi = $(this).parents('li');
 					state = $(this).attr('data-state');
 					// change style according to selection, save state in data attribute for easy access
-					$(this).removeClass('myui_notSelected myui_selected myui_bought');
+					parentLi.removeClass('myui_notSelected myui_selected myui_bought');
 					
 					if (globalState == 'selection') {
 						if (state !== 'not_selected') {
-							$(this).attr({'data-state': 'not_selected'}).addClass('myui_notselected');
+							parentLi.attr({'data-state': 'not_selected'}).addClass('myui_notselected');
 						} else {
-							$(this).addClass('myui_selected').attr({'data-state': 'selected', 'data-icon': 'gear'});				
+							parentLi.addClass('myui_selected')
+							$(this).attr({'data-state': 'selected', 'data-icon': 'gear'});				
 						}
 					} else if (globalState == 'shopping') {
 						if (state !== 'selected') {
-							$(this).attr({'data-state': 'selected'}).addClass('myui_selected');
+							$(this).attr({'data-state': 'selected'});
+							parentLi.addClass('myui_selected');
 						} else {
-							$(this).addClass('myui_bought').attr({'data-state': 'bought', 'data-icon': 'check'});
+							$(this).attr({'data-state': 'bought', 'data-icon': 'check'});
+							parentLi.addClass('myui_bought');
 						}			
 					}
 				});
