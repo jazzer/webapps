@@ -152,6 +152,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			var newDiv = $("<div>").addClass("score").text(POINTS_AT_START);
 			// add event
 			newDiv.click(function() {
+				_save(true);
+
 				// set styles accordingly for visual feedback as well as saving where the edit is ought to be made
 				$('[class*="score-edit"]').removeClass("score-edit");
 				$(this).addClass("score-edit");
@@ -185,13 +187,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			target.text(parseInt(target.text()) + parseInt(addedValue));
 		}
 
-		function _save() {
+		function _save(keepVisible) {
 			// hide controls
 			var target = $('[class*="score-edit"]');
-			$("#score-input").fadeOut(500);
+			if (!keepVisible) {
+				$("#score-input").fadeOut(500);
+			}
 			target.removeClass("score-edit");
 			// recalculate sum
 			_playerSum(target.parent());
+		}
+
+		function _stats() {
+			// highlight best player per round and in total
+	var rounds = player.children('[class*="score"]').not(':last');
+			
+		}
+
+		function _finish() {
+			if (confirm("Wirklich auswerten?")) {
+				// sort
+
+				// winner message
+			}
 		}
 
 		function _clear() {
@@ -209,7 +227,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 </head> 
 
 <body> 
-
 <div data-role="page" id="main">
 	<div data-role="header" data-position="fixed">
 		<h1>Ergebnisse</h1>
@@ -220,9 +237,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 		</div>
 
 		<div id="score-input">
-			<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="left" data-inline="true">&nbsp;</a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="left" data-inline="true">&nbsp;</a>
-			<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="right" data-inline="true">&nbsp;</a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="right" data-inline="true">&nbsp;</a><div style="display: inline-block;width: 30px;"></div>
-			<a href="" onclick="_save();" data-role="button" data-icon="arrow-u" data-iconpos="left" data-inline="true" data-theme="b">Ok</a>
+			<div data-role="controlgroup" data-type="horizontal">
+				<a href="" onclick="_add(-2);" data-role="button" data-icon="arrow-d" data-iconpos="left" data-inline="true">&nbsp;</a> <a href="" onclick="_add(-1);" data-role="button" data-icon="minus" data-iconpos="left" data-inline="true">&nbsp;</a>
+				<a href="" onclick="_add(1);" data-role="button" data-icon="plus" data-iconpos="right" data-inline="true">&nbsp;</a> <a href="" onclick="_add(2);" data-role="button" data-icon="arrow-u" data-iconpos="right" data-inline="true">&nbsp;</a></div>			
+			<a href="" onclick="_save(false);" data-role="button" data-icon="check" data-iconpos="left" data-inline="true" data-theme="b">Ok</a>
 		</div>
 	</div><!-- /content -->
 	
@@ -231,9 +249,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
 			<ul>
 				<li><a href="#addP" data-role="button" data-icon="plus">Spieler</a></li>
 				<li><a href="javascript:_addRound();" data-role="button" data-icon="plus">Runde</a></li>
-				<li><a href="javascript:_stats();" data-role="button" data-icon="star">Statistik</a></li>
-				<li><a href="javascript:_finish();" data-role="button" data-icon="check">Fertig!</a></li>
-				<li><a href="javascript:_clear();" data-role="button" data-icon="delete">Löschen</a></li>
+			</ul>
+		</div>
+
+		<div data-role="navbar">
+			<ul>
+				<li><a href="javascript:_stats();" data-role="button" data-icon="star" data-theme="e">Statistik</a></li>
+				<li><a href="javascript:_finish();" data-role="button" data-icon="check" data-theme="e">Fertig!</a></li>
+				<li><a href="javascript:_clear();" data-role="button" data-icon="delete" data-theme="e">Löschen</a></li>
 			</ul>
 		</div>
 	</div><!-- /footer -->
