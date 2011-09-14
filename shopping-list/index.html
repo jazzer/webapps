@@ -1,13 +1,29 @@
-﻿<!DOCTYPE HTML>
-<html>
-  <head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.css" />
-	<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.js"></script>
+﻿<!DOCTYPE html> 
+<html> 
+ 
+<head> 
+<!-- Copyright (c) 2011 Johannes Mitlmeier
+ 
+This file is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+ 
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/agpl.html>.
+//--> 
+ 
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Einkaufsliste</title> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" /> 
+	<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script> 
+	<script src="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.js"></script>
 	
 	<style type="text/css">
 		.myui_notSelected {
@@ -36,7 +52,6 @@
 				// show non-selected items
 				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').fadeIn();
 			}
-			$('#main').trigger('pageshow');
 		}
 		
 		function _clear() {
@@ -55,7 +70,7 @@
 			for (good in goodsArray) {
 				good = goodsArray[good].replace(/^\s+|\s+$/g, ''); // trim!
 				// create button with text and icon
-				var button = $('<li>').append('<a>').attr({'href': '', 'data-icon': 'plus', 'data-state': 'not_selected'}).html(good).addClass('myui_notSelected');
+				var button = $('<li>').attr({'data-icon': 'plus'}).append($('<a>').attr({'href': '#', 'data-state': 'not_selected'}).html(good).addClass('myui_notSelected'));
 				// add onClick logic
 				button.click(function() {
 					state = $(this).attr('data-state');
@@ -79,19 +94,19 @@
 				
 				goodsDiv.append(button);
 			}
+			$("#goods ul").listview("refresh");
 		}
 
 		// on init
 		$(document).ready(function(){
 			_loadGoods('Milch, Käse, Eier, Mehl, Pizza, Große Wasser, Kleine Wasser, Test 1, Test 2, Test 3');
-			//$('#main').trigger('pageshow');
 		});
 	</script>
 	
   </head>
   <body>
       <div data-role="page" id="main" data-title="Einkaufsliste" data-theme="a">
-          <div data-role="header" data-position="fixed">
+          <div data-role="header">
               <h1>Einkaufsliste</h1>
           </div>
           <div data-role="content">
@@ -100,19 +115,19 @@
 					</ul>
 			  </div>
           </div>
-          <div data-role="footer" data-position="fixed">
+          <div data-role="footer">
               <div data-role="navbar">
                   <ul>
                       <li><a href="javascript:_toggleGlobalState();" data-icon="home">Planung</a></li>
                       <li><a href="#yesnodialog" data-rel="dialog" data-icon="delete">Leeren</a></li>
-                      <li><a href="#adddialog" data-rel="dialog" data-icon="plus">Hinzufügen</a></li>
+                      <!-- <li><a href="#adddialog" data-rel="dialog" data-icon="plus">Hinzufügen</a></li> -->
                   </ul>
               </div>
           </div>
       </div>
 	  
 	  <div data-role="page" id="yesnodialog" data-transition="pop" data-theme="a">
-			<div data-role="header" data-position="fixed">
+			<div data-role="header">
 				<h1>Sicher?</h1>
 			</div>
 			<div data-role="content">
@@ -120,25 +135,7 @@
 					<li><a href="javascript:_clear();">Ja</a></li>
 					<li><a data-rel="back" href="#">Nein</a></li>
 				</ul>			  
-          </div>
-	  </div>
-	  
-	   <div data-role="page" id="adddialog" data-transition="pop" data-theme="a">
-			<div data-role="header" data-position="fixed">
-				<h1>Ware hinzufügen</h1>
-			</div>
-			<div data-role="content">
-				<form onsubmit="javascript:_add();">
-					<ul data-role="listview">
-						<li class="ui-body ui-body-b">
-							<fieldset class="ui-body ui-body-b">
-									<div class="ui-block-a"><button type="submit" data-theme="d">Cancel</button></div>
-									<div class="ui-block-b"><button type="submit" data-theme="a" data-rel="back">Submit</button></div>
-							</fieldset>
-						</li>
-					</ul>
-				</form>
-          </div>
+		          </div>
 	  </div>
   </body>
 </html>
