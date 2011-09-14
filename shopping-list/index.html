@@ -1,0 +1,144 @@
+﻿<!DOCTYPE HTML>
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.js"></script>
+	
+	<style type="text/css">
+		.myui_notSelected {
+		}
+		.myui_selected {
+			background: #fc9;
+		}
+		.myui_bought {
+			background: #9f9;
+		}
+	</style>
+
+	<script type="text/javascript">
+		var globalState = 'selection';
+	
+		function _toggleGlobalState() {
+			if (globalState == 'selection') {
+				globalState = 'shopping';
+				// change text
+				$('#main').children('[data-role="footer"]').children('[data-role="navbar"]').children('ul').children().first().find('.ui-btn-text').html('Einkauf');
+				// hide non-selected items
+				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').fadeOut();
+			} else {
+				globalState = 'selection';
+				$('#main').children('[data-role="footer"]').children('[data-role="navbar"]').children('ul').children().first().find('.ui-btn-text').html('Planung');
+				// show non-selected items
+				$('#main').children('[data-role="content"]').find('[data-state="not_selected"]').fadeIn();
+			}
+			$('#main').trigger('pageshow');
+		}
+		
+		function _clear() {
+			$('#yesnodialog').dialog('close');
+			$('#main').children('[data-role="content"]').find('[data-state!="not_selected"]').attr('data-state', 'not_selected').removeClass('myui_notSelected myui_selected myui_bought').addClass('myui_notSelected');
+		}
+		
+		function _add() {
+		
+		}
+		
+			
+		function _loadGoods(goods) {
+			goodsDiv = $('#goods').children('ul').empty();
+			goodsArray = goods.split(',');
+			for (good in goodsArray) {
+				good = goodsArray[good].replace(/^\s+|\s+$/g, ''); // trim!
+				// create button with text and icon
+				var button = $('<li>').append('<a>').attr({'href': '', 'data-icon': 'plus', 'data-state': 'not_selected'}).html(good).addClass('myui_notSelected');
+				// add onClick logic
+				button.click(function() {
+					state = $(this).attr('data-state');
+					// change style according to selection, save state in data attribute for easy access
+					$(this).removeClass('myui_notSelected myui_selected myui_bought');
+					
+					if (globalState == 'selection') {
+						if (state !== 'not_selected') {
+							$(this).attr({'data-state': 'not_selected'}).addClass('myui_notselected');
+						} else {
+							$(this).addClass('myui_selected').attr({'data-state': 'selected', 'data-icon': 'gear'});				
+						}
+					} else if (globalState == 'shopping') {
+						if (state !== 'selected') {
+							$(this).attr({'data-state': 'selected'}).addClass('myui_selected');
+						} else {
+							$(this).addClass('myui_bought').attr({'data-state': 'bought', 'data-icon': 'check'});
+						}			
+					}
+				});
+				
+				goodsDiv.append(button);
+			}
+		}
+
+		// on init
+		$(document).ready(function(){
+			_loadGoods('Milch, Käse, Eier, Mehl, Pizza, Große Wasser, Kleine Wasser, Test 1, Test 2, Test 3');
+			//$('#main').trigger('pageshow');
+		});
+	</script>
+	
+  </head>
+  <body>
+      <div data-role="page" id="main" data-title="Einkaufsliste" data-theme="a">
+          <div data-role="header" data-position="fixed">
+              <h1>Einkaufsliste</h1>
+          </div>
+          <div data-role="content">
+			  <div id="goods">
+					<ul data-role="listview" data-filter="true" data-inset="true">
+					</ul>
+			  </div>
+          </div>
+          <div data-role="footer" data-position="fixed">
+              <div data-role="navbar">
+                  <ul>
+                      <li><a href="javascript:_toggleGlobalState();" data-icon="home">Planung</a></li>
+                      <li><a href="#yesnodialog" data-rel="dialog" data-icon="delete">Leeren</a></li>
+                      <li><a href="#adddialog" data-rel="dialog" data-icon="plus">Hinzufügen</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+	  
+	  <div data-role="page" id="yesnodialog" data-transition="pop" data-theme="a">
+			<div data-role="header" data-position="fixed">
+				<h1>Sicher?</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview">
+					<li><a href="javascript:_clear();">Ja</a></li>
+					<li><a data-rel="back" href="#">Nein</a></li>
+				</ul>			  
+          </div>
+	  </div>
+	  
+	   <div data-role="page" id="adddialog" data-transition="pop" data-theme="a">
+			<div data-role="header" data-position="fixed">
+				<h1>Ware hinzufügen</h1>
+			</div>
+			<div data-role="content">
+				<form onsubmit="javascript:_add();">
+					<ul data-role="listview">
+						<li class="ui-body ui-body-b">
+							<fieldset class="ui-body ui-body-b">
+									<div class="ui-block-a"><button type="submit" data-theme="d">Cancel</button></div>
+									<div class="ui-block-b"><button type="submit" data-theme="a" data-rel="back">Submit</button></div>
+							</fieldset>
+						</li>
+					</ul>
+				</form>
+          </div>
+	  </div>
+  </body>
+</html>
